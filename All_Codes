@@ -1,0 +1,80 @@
+#IR-6 
+
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from nltk.tokenize import word_tokenize
+
+nltk.download('punkt')
+nltk.download('stopwords')
+
+document = "Engineering is 4 year long gap to decide what to do in life."
+
+words = word_tokenize(document)
+stop_words = set(stopwords.words('english'))
+stemmer = PorterStemmer()
+preprocessed_text = ' '.join(stemmer.stem(word) for word in words if word.lower() not in stop_words)
+
+print("Original Text:", document)
+print("\nPreprocessed Text:", preprocessed_text)
+
+
+
+
+#IR-7
+
+from collections import defaultdict
+
+documents = {
+    1: "Engineering is a myth just like democracy does",
+    2: "We sell different parts of ourselves",
+    3: "Terrorism is fun unless it's not happening near our house",
+    4: "Ohh dear"
+}
+
+inverted_index = defaultdict(list)
+for doc_id, text in documents.items():
+    for token in text.lower().split():
+        inverted_index[token].append(doc_id)
+
+query = input("Enter your query : ")
+matching_doc_ids = set(inverted_index.get(query.lower(), []))
+
+if matching_doc_ids:
+    for doc_id in matching_doc_ids:
+        print(f"Document {doc_id}: {documents[doc_id]}")
+else:
+    print(f"No matching documents found for the query: {query}")
+
+
+#IR-8 
+
+import numpy as np
+import pandas as pd
+from pgmpy.estimators import MaximumLikelihoodEstimator as mle
+from pgmpy.models import BayesianModel as bm
+from pgmpy.inference import VariableElimination as ve
+
+
+hd = pd.read_csv('heart.csv')
+
+
+model = bm([('age', 'target'), ('sex', 'target'), ('exang', 'target'),
+                      ('cp', 'target'), ('target', 'restecg'), ('target', 'chol')])
+
+
+model.fit(hd, estimator= me)
+
+
+HeartDiseaseTestInfer = ve(model)
+
+
+q1 = HeartDiseaseTestInfer.query(variables=['target'], evidence={'restecg': 1})
+q2 = HeartDiseaseTestInfer.query(variables=['target'], evidence={'cp': 2})
+
+
+print(q1)
+print(q2)
+
+
+
